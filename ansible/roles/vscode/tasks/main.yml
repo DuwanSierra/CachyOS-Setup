@@ -1,6 +1,15 @@
 ---
-# visual-studio-code-bin es el build oficial de Microsoft con marketplace completo (AUR).
-# yay no puede correr como root; maneja sudo internamente para el paso de pacman.
+# yay llama a sudo internamente sin TTY cuando corre desde Ansible.
+# Defaults !requiretty permite que sudo funcione sin terminal abierta.
+- name: Allow sudo without TTY for AUR builds
+  ansible.builtin.lineinfile:
+    path: /etc/sudoers.d/notty
+    line: 'Defaults !requiretty'
+    create: true
+    validate: 'visudo -cf %s'
+    mode: '0440'
+  become: true
+
 - name: Check if visual-studio-code-bin is already installed
   ansible.builtin.command:
     cmd: pacman -Q visual-studio-code-bin
