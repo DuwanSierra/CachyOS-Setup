@@ -1,0 +1,6 @@
+---
+- name: Install Steam
+  community.general.pacman:
+    name: steam
+    state: present
+  become: true
