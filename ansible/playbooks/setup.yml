@@ -3,7 +3,12 @@
   hosts: localhost
   connection: local
   gather_facts: true
-
+  vars_prompt:
+    - name: sudo_pass
+      prompt: "sudo password"
+      private: true
+  vars:
+    ansible_become_pass: "{{ sudo_pass }}"
   roles:
     - podman
     - oh_my_zsh

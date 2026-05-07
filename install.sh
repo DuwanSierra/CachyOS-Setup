@@ -54,7 +54,7 @@ echo ""
 warn "Corriendo playbook..."
 echo ""
 
-(cd "$REPO_DIR/ansible" && ansible-playbook playbooks/setup.yml --ask-become-pass)
+(cd "$REPO_DIR/ansible" && ansible-playbook playbooks/setup.yml)
 
 echo ""
 ok "Instalacion completa."
