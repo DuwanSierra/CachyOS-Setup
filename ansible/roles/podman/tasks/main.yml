@@ -1,0 +1,9 @@
+---
+- name: Install podman and companion tools
+  community.general.pacman:
+    name:
+      - podman
+      - podman-compose
+      - buildah
+    state: present
+  become: true

@@ -1,0 +1,10 @@
+---
+- name: CachyOS initial setup
+  hosts: localhost
+  connection: local
+  gather_facts: true
+
+  roles:
+    - podman
+    - oh_my_zsh
+    - vscode

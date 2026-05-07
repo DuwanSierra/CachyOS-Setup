@@ -1,0 +1,17 @@
+# Skills — los archivos de skills se regeneran con `npx skills add`
+# skills-lock.json SÍ se commitea (equivalente a package-lock.json)
+.agents/
+
+# Claude Code — configuración local del IDE, no es parte del proyecto
+.claude/
+
+# Ansible
+*.retry
+ansible/**/*.log
+ansible/inventory/host_vars/**/vault.yml
+ansible/.vault_pass
+ansible/vault_pass
+
+# Secrets / credenciales
+.env
+*.secret

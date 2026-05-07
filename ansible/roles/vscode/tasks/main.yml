@@ -1,0 +1,15 @@
+---
+# visual-studio-code-bin es el build oficial de Microsoft con marketplace completo (AUR).
+# yay no puede correr como root; maneja sudo internamente para el paso de pacman.
+- name: Check if visual-studio-code-bin is already installed
+  ansible.builtin.command:
+    cmd: pacman -Q visual-studio-code-bin
+  register: vscode_installed
+  changed_when: false
+  failed_when: false
+
+- name: Install Visual Studio Code (Microsoft build) via yay
+  ansible.builtin.command:
+    cmd: yay -S --noconfirm visual-studio-code-bin
+  when: vscode_installed.rc != 0
+  changed_when: true
