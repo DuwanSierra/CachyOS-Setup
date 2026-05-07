@@ -1,0 +1,15 @@
+---
+- name: Check if youtube-music is already installed
+  ansible.builtin.command:
+    cmd: pacman -Q youtube-music
+  register: ytmusic_installed
+  changed_when: false
+  failed_when: false
+
+- name: Install YouTube Music via yay
+  ansible.builtin.command:
+    cmd: yay -S --noconfirm --sudoflags "-A" youtube-music
+  environment:
+    SUDO_ASKPASS: "{{ yay_askpass }}"
+  when: ytmusic_installed.rc != 0
+  changed_when: true
