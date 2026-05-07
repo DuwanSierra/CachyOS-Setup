@@ -19,7 +19,16 @@ echo ""
 
 [[ $EUID -eq 0 ]] && err "No corras este script como root. Usa tu usuario normal."
 
-command -v yay &>/dev/null || err "yay no encontrado. Instalalo antes de continuar: https://github.com/Jguer/yay"
+if command -v yay &>/dev/null; then
+  ok "yay ya instalado"
+else
+  warn "yay no encontrado. Instalando desde AUR..."
+  sudo pacman -S --noconfirm git base-devel
+  git clone https://aur.archlinux.org/yay.git /tmp/yay-install
+  (cd /tmp/yay-install && makepkg -si --noconfirm)
+  rm -rf /tmp/yay-install
+  ok "yay instalado"
+fi
 
 if command -v ansible &>/dev/null; then
   ok "ansible ya instalado ($(ansible --version | head -1))"
