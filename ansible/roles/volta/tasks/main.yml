@@ -1,0 +1,15 @@
+---
+- name: Check if volta is already installed
+  ansible.builtin.command:
+    cmd: pacman -Q volta-bin
+  register: volta_installed
+  changed_when: false
+  failed_when: false
+
+- name: Install volta via yay
+  ansible.builtin.command:
+    cmd: yay -S --noconfirm --sudoflags "-A" volta-bin
+  environment:
+    SUDO_ASKPASS: "{{ yay_askpass }}"
+  when: volta_installed.rc != 0
+  changed_when: true

@@ -3,13 +3,34 @@
   hosts: localhost
   connection: local
   gather_facts: true
+
   vars_prompt:
     - name: sudo_pass
       prompt: "sudo password"
       private: true
+
   vars:
     ansible_become_pass: "{{ sudo_pass }}"
+    yay_askpass: /tmp/.ansible_yay_askpass
+
+  pre_tasks:
+    - name: Create sudo askpass script for AUR builds
+      ansible.builtin.copy:
+        content: "#!/bin/bash\necho '{{ sudo_pass }}'\n"
+        dest: "{{ yay_askpass }}"
+        mode: '0700'
+      no_log: true
+
+  post_tasks:
+    - name: Remove sudo askpass script
+      ansible.builtin.file:
+        path: "{{ yay_askpass }}"
+        state: absent
+
   roles:
     - podman
+    - podman_desktop
     - oh_my_zsh
     - vscode
+    - lens
+    - volta

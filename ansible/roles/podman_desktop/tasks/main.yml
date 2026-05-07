@@ -1,0 +1,15 @@
+---
+- name: Check if podman-desktop is already installed
+  ansible.builtin.command:
+    cmd: pacman -Q podman-desktop
+  register: podman_desktop_installed
+  changed_when: false
+  failed_when: false
+
+- name: Install podman-desktop via yay
+  ansible.builtin.command:
+    cmd: yay -S --noconfirm --sudoflags "-A" podman-desktop
+  environment:
+    SUDO_ASKPASS: "{{ yay_askpass }}"
+  when: podman_desktop_installed.rc != 0
+  changed_when: true

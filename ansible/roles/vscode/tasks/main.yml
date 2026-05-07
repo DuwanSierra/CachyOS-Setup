@@ -1,6 +1,4 @@
 ---
-# yay llama a sudo internamente sin TTY cuando corre desde Ansible.
-# Solución: script temporal de askpass que le pasa la contraseña a sudo via -A.
 - name: Check if visual-studio-code-bin is already installed
   ansible.builtin.command:
     cmd: pacman -Q visual-studio-code-bin
@@ -8,25 +6,10 @@
   changed_when: false
   failed_when: false
 
-- name: Install Visual Studio Code via yay
+- name: Install Visual Studio Code (Microsoft build) via yay
+  ansible.builtin.command:
+    cmd: yay -S --noconfirm --sudoflags "-A" visual-studio-code-bin
+  environment:
+    SUDO_ASKPASS: "{{ yay_askpass }}"
   when: vscode_installed.rc != 0
-  block:
-    - name: Create temporary sudo askpass script
-      ansible.builtin.copy:
-        content: "#!/bin/bash\necho '{{ sudo_pass }}'\n"
-        dest: /tmp/.ansible_yay_askpass
-        mode: '0700'
-      no_log: true
-
-    - name: Install visual-studio-code-bin
-      ansible.builtin.command:
-        cmd: yay -S --noconfirm --sudoflags "-A" visual-studio-code-bin
-      environment:
-        SUDO_ASKPASS: /tmp/.ansible_yay_askpass
-      changed_when: true
-
-  always:
-    - name: Remove temporary sudo askpass script
-      ansible.builtin.file:
-        path: /tmp/.ansible_yay_askpass
-        state: absent
+  changed_when: true
