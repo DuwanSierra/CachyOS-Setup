@@ -1,25 +1,15 @@
 ---
-- name: Create icons directory
-  ansible.builtin.file:
-    path: "{{ ansible_env.HOME }}/.local/share/icons"
-    state: directory
-    mode: '0755'
+- name: Check if pear-desktop is already installed
+  ansible.builtin.command:
+    cmd: pacman -Q pear-desktop
+  register: ytmusic_installed
+  changed_when: false
+  failed_when: false
 
-- name: Download YouTube Music icon
-  ansible.builtin.get_url:
-    url: https://www.gstatic.com/youtube/media/ytm/images/applauncher/youtube_music_icon_x256.png
-    dest: "{{ ansible_env.HOME }}/.local/share/icons/youtube-music.png"
-    mode: '0644'
-
-- name: Create YouTube Music desktop entry
-  ansible.builtin.copy:
-    dest: "{{ ansible_env.HOME }}/.local/share/applications/youtube-music.desktop"
-    mode: '0644'
-    content: |
-      [Desktop Entry]
-      Name=YouTube Music
-      Exec=/usr/bin/google-chrome-stable --app=https://music.youtube.com
-      Icon={{ ansible_env.HOME }}/.local/share/icons/youtube-music.png
-      Type=Application
-      Categories=AudioVideo;Audio;Music;
-      StartupWMClass=crx_cinhimbnkkaeohfgghhklpknlkffjgod
+- name: Install YouTube Music (pear-desktop) via yay
+  ansible.builtin.command:
+    cmd: yay -S --noconfirm --sudoflags "-A" pear-desktop
+  environment:
+    SUDO_ASKPASS: "{{ yay_askpass }}"
+  when: ytmusic_installed.rc != 0
+  changed_when: true
