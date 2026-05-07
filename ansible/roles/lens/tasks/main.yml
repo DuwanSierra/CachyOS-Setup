@@ -1,14 +1,14 @@
 ---
-- name: Check if open-lens is already installed
+- name: Check if lens is already installed
   ansible.builtin.command:
-    cmd: pacman -Q open-lens
+    cmd: pacman -Q lens
   register: lens_installed
   changed_when: false
   failed_when: false
 
-- name: Install open-lens via yay
+- name: Install lens via yay
   ansible.builtin.command:
-    cmd: yay -S --noconfirm --sudoflags "-A" open-lens
+    cmd: yay -S --noconfirm --sudoflags "-A" lens
   environment:
     SUDO_ASKPASS: "{{ yay_askpass }}"
   when: lens_installed.rc != 0
